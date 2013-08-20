@@ -240,6 +240,7 @@ Handle<Value> OSUFlowWrap::SetSeedPoints(const Arguments& args) {
 		seeds[i / 3].Set(a_seeds->Get(i)->NumberValue(), a_seeds->Get(i + 1)->NumberValue(), a_seeds->Get(i + 2)->NumberValue());
 	}
 	o->SetSeedPoints(seeds, num_elements / 3);
+	delete[] seeds;
 
 	return scope.Close(Undefined());
 }

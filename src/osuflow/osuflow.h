@@ -4,6 +4,7 @@ OSUFlow wrap class header
 Author: Wenbin He
 */
 
+#define BUILDING_NODE_EXTENSION
 #ifndef OSUFLOWWRAP_H
 #define OSUFLOWWRAP_H
 
