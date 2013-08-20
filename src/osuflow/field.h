@@ -4,6 +4,7 @@ Field wrap class header
 Author: Wenbin He
 */
 
+#define BUILDING_NODE_EXTENSION
 #ifndef FIELDWRAP_H
 #define FIELDWRAP_H
 
@@ -24,8 +25,8 @@ private:
 	static Handle<Value> New(const Arguments& args);
 
 	// wrapped function
-	// feature computation
-	static Handle<Value> UnitTangent(const Arguments& args);
+	// to obtain vector data
+	static Handle<Value> at_phys(const Arguments& args);
 
 	// wrapped object
 	CVectorField *field;

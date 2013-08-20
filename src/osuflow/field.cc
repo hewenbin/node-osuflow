@@ -15,7 +15,7 @@ Persistent<Function> FieldWrap::constructor;
 FieldWrap::FieldWrap() {}
 
 FieldWrap::~FieldWrap() {
-	delete field;
+	field = NULL;
 }
 
 void FieldWrap::Init(Handle<Object> exports) {
@@ -25,9 +25,9 @@ void FieldWrap::Init(Handle<Object> exports) {
 	tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
 	// prototype
-	// feature computation
-	tpl->PrototypeTemplate()->Set(String::NewSymbol("unitTangent"),
-		FunctionTemplate::New(UnitTangent)->GetFunction());
+	// to obtain vector data
+	tpl->PrototypeTemplate()->Set(String::NewSymbol("at_phys"),
+		FunctionTemplate::New(at_phys)->GetFunction());
 
 	constructor = Persistent<Function>::New(tpl->GetFunction());
 	exports->Set(String::NewSymbol("Field"), constructor);
@@ -52,22 +52,21 @@ Handle<Value> FieldWrap::NewInstance(CVectorField *field) {
 	return scope.Close(instance);
 }
 
-// feature computation
-Handle<Value> FieldWrap::UnitTangent(const Arguments& args) {
+// to obtain vector data
+Handle<Value> FieldWrap::at_phys(const Arguments& args) {
 	HandleScope scope;
 
 	FieldWrap *w = ObjectWrap::Unwrap<FieldWrap>(args.This());
 	CVectorField *f = w->field;
 
 	Handle<Array> a_pos = Handle<Array>::Cast(args[0]);
-	VECTOR3 pos, tangent;
+	Handle<Array> a_vec = Handle<Array>::Cast(args[2]);
+	VECTOR3 pos, vec;
 	pos.Set(a_pos->Get(0)->NumberValue(), a_pos->Get(1)->NumberValue(), a_pos->Get(2)->NumberValue());
-	tangent = f->UnitTangent(pos);
+	f->at_phys(pos, args[1]->NumberValue(), vec);
+	a_vec->Set(0, Number::New(vec[0]));
+	a_vec->Set(1, Number::New(vec[1]));
+	a_vec->Set(2, Number::New(vec[2]));
 
-	Handle<Array> a_tangent = Array::New(3);
-	a_tangent->Set(0, Number::New(tangent[0]));
-	a_tangent->Set(1, Number::New(tangent[1]));
-	a_tangent->Set(2, Number::New(tangent[2]));
-
-	return scope.Close(a_tangent);
+	return scope.Close(Undefined());
 }
