@@ -27,6 +27,9 @@ private:
 	// wrapped function
 	// to obtain vector data
 	static Handle<Value> at_phys(const Arguments& args);
+	// feature computation
+	static Handle<Value> LQDG(const Arguments& args);
+	static Handle<Value> Curvature(const Arguments& args);
 
 	// wrapped object
 	CVectorField *field;
