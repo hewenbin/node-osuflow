@@ -178,7 +178,6 @@ public :
 	float det();
 	int inverse( MATRIX3& m) ;//added by lijie to handle curvilinear grid
 	MATRIX3 transpose();//added by lijie to handle curvilinear grid
-
 };
 
 //////////////////////////////////////////////////////////////////////////

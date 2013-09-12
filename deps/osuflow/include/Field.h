@@ -82,11 +82,14 @@ public:
 	bool IsInRealBoundaries(PointInfo& p, float time);
 
 	// feature computation
+	VECTOR3 Tangent(const VECTOR3& pos);
 	VECTOR3 UnitTangent(const VECTOR3& pos);
-
 	MATRIX3 Jacobian(const VECTOR3& pos);
+	MATRIX3 UnitJacobian(const VECTOR3& pos);
 
-	void ComputeJVA(VECTOR3* streamline, int num, float* J, float* V, float* A);
+	void LQDG(const VECTOR3& pos, float& lambda2, float& q, float& delta, float& gamma2);
+	void LQDGline(VECTOR3* const fieldline, const int num, float* lambda2, float* q, float* delta, float* gamma2);
+	void Curvature(VECTOR3* const fieldline, const int num, float* curvature);
 
 protected:
 	// reset
@@ -96,5 +99,16 @@ protected:
 	// curl
 	void curl(float, float, float, VECTOR3&, VECTOR3&, VECTOR3&, VECTOR3&, VECTOR3&, VECTOR3&, VECTOR3&);
 };
+
+// file polynomials.c
+extern double cube_root(double x);
+extern int solve_cubic(float, float, float, float, float*, float*, float*);
+extern int solve_quadratic(float, float, float, float*, float*);
+extern int solve_linear(float, float, float*);
+
+// file eigenvals.c
+extern int compute_eigenvalues(float m[3][3], float eigenvalues[3]);
+extern void compute_real_eigenvectors(float m[3][3], float vals[3], float vecs[3][3]);
+extern void compute_complex_eigenvectors(float m[3][3], float vals[3], float vecs[3][3]);
 
 #endif
