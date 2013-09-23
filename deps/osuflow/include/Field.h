@@ -82,8 +82,6 @@ public:
 	bool IsInRealBoundaries(PointInfo& p, float time);
 
 	// feature computation
-	VECTOR3 Tangent(const VECTOR3& pos);
-	VECTOR3 UnitTangent(const VECTOR3& pos);
 	MATRIX3 Jacobian(const VECTOR3& pos);
 	MATRIX3 UnitJacobian(const VECTOR3& pos);
 

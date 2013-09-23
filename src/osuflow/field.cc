@@ -31,6 +31,8 @@ void FieldWrap::Init(Handle<Object> exports) {
 	// feature computation
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("lqdg"),
 		FunctionTemplate::New(LQDG)->GetFunction());
+	tpl->PrototypeTemplate()->Set(String::NewSymbol("lqdgLine"),
+		FunctionTemplate::New(LQDGline)->GetFunction());
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("curvature"),
 		FunctionTemplate::New(Curvature)->GetFunction());
 
@@ -97,30 +99,68 @@ Handle<Value> FieldWrap::LQDG(const Arguments& args) {
 	return scope.Close(Undefined());
 }
 
+Handle<Value> FieldWrap::LQDGline(const Arguments& args) {
+	HandleScope scope;
+
+	FieldWrap *w = ObjectWrap::Unwrap<FieldWrap>(args.This());
+	CVectorField *f = w->field;
+
+	Handle<Array> a_fieldline = Handle<Array>::Cast(args[0]);
+	Handle<Array> a_lambda2 = Handle<Array>::Cast(args[1]);
+	Handle<Array> a_q = Handle<Array>::Cast(args[2]);
+	Handle<Array> a_delta = Handle<Array>::Cast(args[3]);
+	Handle<Array> a_gamma2 = Handle<Array>::Cast(args[4]);
+
+	int num = a_fieldline->Length();
+	VECTOR3* fieldline = new VECTOR3[num / 3];
+	float* lambda2 = new float[num / 3];
+	float* q = new float[num / 3];
+	float* delta = new float[num / 3];
+	float* gamma2 = new float[num / 3];
+
+	for (int i = 0; i < num; i += 3) {
+		fieldline[i / 3].Set(a_fieldline->Get(i)->NumberValue(), a_fieldline->Get(i + 1)->NumberValue(), a_fieldline->Get(i + 2)->NumberValue());
+	}
+
+	f->LQDGline(fieldline, num / 3, lambda2, q, delta, gamma2);
+
+	for (int i = 0; i < num / 3; i++) {
+		a_lambda2->Set(i, Number::New(lambda2[i]));
+		a_q->Set(i, Number::New(q[i]));
+		a_delta->Set(i, Number::New(delta[i]));
+		a_gamma2->Set(i, Number::New(gamma2[i]));
+	}
+
+	delete[] fieldline;
+	delete[] lambda2; delete[] q; delete[] delta; delete[] gamma2;
+
+	return scope.Close(Undefined());
+}
+
 Handle<Value> FieldWrap::Curvature(const Arguments& args) {
 	HandleScope scope;
 
 	FieldWrap *w = ObjectWrap::Unwrap<FieldWrap>(args.This());
 	CVectorField *f = w->field;
 
-	Handle<Array> a_streamline = Handle<Array>::Cast(args[0]);
+	Handle<Array> a_fieldline = Handle<Array>::Cast(args[0]);
 	Handle<Array> a_curvature = Handle<Array>::Cast(args[1]);
 
-	int num = a_streamline->Length();
-	VECTOR3* streamline = new VECTOR3[num / 3];
+	int num = a_fieldline->Length();
+	VECTOR3* fieldline = new VECTOR3[num / 3];
 	float* curvature = new float[num / 3];
 
-	for (int i = 0; i < num; i +=3) {
-		streamline[i / 3].Set(a_streamline->Get(i)->NumberValue(), a_streamline->Get(i + 1)->NumberValue(), a_streamline->Get(i + 2)->NumberValue());
+	for (int i = 0; i < num; i += 3) {
+		fieldline[i / 3].Set(a_fieldline->Get(i)->NumberValue(), a_fieldline->Get(i + 1)->NumberValue(), a_fieldline->Get(i + 2)->NumberValue());
 	}
 
-	f->Curvature(streamline, num / 3, curvature);
+	f->Curvature(fieldline, num / 3, curvature);
 
 	for (int i = 0; i < num / 3; i++) {
 		a_curvature->Set(i, Number::New(curvature[i]));
 	}
 
-	delete[] streamline;
+	delete[] fieldline;
 	delete[] curvature;
 
 	return scope.Close(Undefined());
