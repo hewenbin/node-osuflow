@@ -29,10 +29,10 @@ void FieldWrap::Init(Handle<Object> exports) {
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("at_phys"),
 		FunctionTemplate::New(at_phys)->GetFunction());
 	// feature computation
-	tpl->PrototypeTemplate()->Set(String::NewSymbol("lqdg"),
-		FunctionTemplate::New(LQDG)->GetFunction());
-	tpl->PrototypeTemplate()->Set(String::NewSymbol("lqdgLine"),
-		FunctionTemplate::New(LQDGline)->GetFunction());
+	tpl->PrototypeTemplate()->Set(String::NewSymbol("generateVortexMetrics"),
+		FunctionTemplate::New(GenerateVortexMetrics)->GetFunction());
+	tpl->PrototypeTemplate()->Set(String::NewSymbol("generateVortexMetricsLine"),
+		FunctionTemplate::New(GenerateVortexMetricsLine)->GetFunction());
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("curvature"),
 		FunctionTemplate::New(Curvature)->GetFunction());
 
@@ -79,7 +79,7 @@ Handle<Value> FieldWrap::at_phys(const Arguments& args) {
 }
 
 // feature computation
-Handle<Value> FieldWrap::LQDG(const Arguments& args) {
+Handle<Value> FieldWrap::GenerateVortexMetrics(const Arguments& args) {
 	HandleScope scope;
 
 	FieldWrap *w = ObjectWrap::Unwrap<FieldWrap>(args.This());
@@ -90,7 +90,7 @@ Handle<Value> FieldWrap::LQDG(const Arguments& args) {
 	VECTOR3 pos;
 	pos.Set(a_pos->Get(0)->NumberValue(), a_pos->Get(1)->NumberValue(), a_pos->Get(2)->NumberValue());
 	float lambda2, q, delta, gamma2;
-	f->LQDG(pos, lambda2, q, delta, gamma2);
+	f->GenerateVortexMetrics(pos, lambda2, q, delta, gamma2);
 	a_lqdg->Set(0, Number::New(lambda2));
 	a_lqdg->Set(1, Number::New(q));
 	a_lqdg->Set(2, Number::New(delta));
@@ -99,7 +99,7 @@ Handle<Value> FieldWrap::LQDG(const Arguments& args) {
 	return scope.Close(Undefined());
 }
 
-Handle<Value> FieldWrap::LQDGline(const Arguments& args) {
+Handle<Value> FieldWrap::GenerateVortexMetricsLine(const Arguments& args) {
 	HandleScope scope;
 
 	FieldWrap *w = ObjectWrap::Unwrap<FieldWrap>(args.This());
@@ -122,7 +122,7 @@ Handle<Value> FieldWrap::LQDGline(const Arguments& args) {
 		fieldline[i / 3].Set(a_fieldline->Get(i)->NumberValue(), a_fieldline->Get(i + 1)->NumberValue(), a_fieldline->Get(i + 2)->NumberValue());
 	}
 
-	f->LQDGline(fieldline, num / 3, lambda2, q, delta, gamma2);
+	f->GenerateVortexMetricsLine(fieldline, num / 3, lambda2, q, delta, gamma2);
 
 	for (int i = 0; i < num / 3; i++) {
 		a_lambda2->Set(i, Number::New(lambda2[i]));

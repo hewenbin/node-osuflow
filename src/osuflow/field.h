@@ -28,8 +28,8 @@ private:
 	// to obtain vector data
 	static Handle<Value> at_phys(const Arguments& args);
 	// feature computation
-	static Handle<Value> LQDG(const Arguments& args);
-	static Handle<Value> LQDGline(const Arguments& args);
+	static Handle<Value> GenerateVortexMetrics(const Arguments& args);
+	static Handle<Value> GenerateVortexMetricsLine(const Arguments& args);
 	static Handle<Value> Curvature(const Arguments& args);
 
 	// wrapped object

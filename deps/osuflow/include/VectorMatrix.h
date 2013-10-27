@@ -175,7 +175,8 @@ public :
 	return(*this); };
 	void Identity();                             // set to identity
 
-	float det();
+	float det();	// determinant of the matrix
+
 	int inverse( MATRIX3& m) ;//added by lijie to handle curvilinear grid
 	MATRIX3 transpose();//added by lijie to handle curvilinear grid
 };
