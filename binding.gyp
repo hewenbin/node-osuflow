@@ -3,6 +3,7 @@
 		"target_name" : "nof",
 		"sources" : [
 			"src/nof.cc",
+			"src/mpi/node_mpi.cc",
 			"src/osuflow/osuflow.cc",
 			"src/osuflow/field.cc"
 		],
